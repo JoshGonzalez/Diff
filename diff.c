@@ -171,11 +171,12 @@ void set_flags(const char* arg, const char* s, const char* t, int* value){
 
 int files_check(int argc, const char* argv[]){
   int count = 0;
+  if (argc == 2){ return 2;}
   if(argc < 2){
     return 0;
   }
   for(int i = argc; i > 0; --i){
-    if(strpbrk(argv[i], ".txt") != NULL){count++;}
+    if(strstr(argv[i], ".txt") != NULL){count++;}
     else if(count > 2 || count != 2){
       fprintf(stderr, "diff: This version of diff only handles two .txt files");
       exit(1);
@@ -189,10 +190,6 @@ int files_check(int argc, const char* argv[]){
 }
 
 int main(int argc, const char* argv[]){
-  /*version = ON;
-  if(version){
-    print_version();
-  }*/
   perform_flags(--argc, ++argv);
   return 0;
 }
