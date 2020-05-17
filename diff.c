@@ -1,7 +1,7 @@
 #include "diff.h"
 #include "para.h"
 #include "util.h"
-
+#include <string.h>
 
 
 
@@ -50,14 +50,16 @@ void perform_flags(int argc, const char* argv[]){
     exit(0);
   }
 
-  if(files_check(argc, argv) == 2){
+  /*if(files_check(argc, argv) == 2){
     files[0] = argv[argc - 2];
     files[1] = argv[argc - 1];
   }
   else{
     fprintf(stderr, "diff: Not the right amount of files\n");
     exit(1);
-  }
+  }*/
+  files[0] = argv[argc - 2];
+  files[1] = argv[argc - 1];
 
   loadfiles(files[0], files[1]);
 
@@ -85,14 +87,14 @@ void perform_flags(int argc, const char* argv[]){
   if(brief && different){
     printf("Files %s and %s are different\n", files[0], files[1]);
     //potential short
-    for(int i = 0; i < differ_index; ++i){
+    for(int i = 0; i < differ_index - 1; ++i){
       printf("Line %d: %s %50s %s", i, differ[i][0], ">", differ[i][1]);
     }
   }
 
   if(identical_files && !different){
     printf("Files %s and %s are identical\n", files[0], files[1]);
-    for(int i = 0; i < same_index; ++i){
+    for(int i = 0; i < same_index - 1; ++i){
       printf("Line %d: %s %50s %s", i, same[i][0], ">", same[i][1]);
     }
   }
@@ -100,13 +102,13 @@ void perform_flags(int argc, const char* argv[]){
   if(identical_or_different_files){
     if(different){
       printf("Files %s and %s are different\n", files[0], files[1]);
-      for(int i = 0; i < differ_index; ++i){
+      for(int i = 0; i < differ_index - 1; ++i){
         printf("Line %d: %s %50s %s", i, differ[i][0], ">", differ[i][1]);
       }
     }
     else{
       printf("Files %s and %s are identical\n", files[0], files[1]);
-      for(int i = 0; i < same_index; ++i){
+      for(int i = 0; i < same_index- 1; ++i){
         printf("Line %d: %s %50s %s", i, same[i][0], ">", same[i][1]);
       }
     }
@@ -169,15 +171,20 @@ void set_flags(const char* arg, const char* s, const char* t, int* value){
   }
 }
 
-int files_check(int argc, const char* argv[]){
+/*int files_check(int argc, const char* argv[]){
   int count = 0;
-  if (argc == 2){ return 2;}
+  //if (argc == 2){ return 2;}
   if(argc < 2){
     return 0;
   }
   for(int i = argc; i > 0; --i){
-    if(strstr(argv[i], ".txt") != NULL){count++;}
-    else if(count > 2 || count != 2){
+    char subbuf[4];
+    const char* pos = argv[i];
+    int len = (int)strlen(argv[i]) - 5;
+    pos += len;
+    for(int i = len, j = 0; i < strlen(argv[i]); ++i){subbuf[j] = *pos;}
+    if(strcmp(subbuf, ".txt") == 0){count++;}
+    if(count > 2 || count != 2){
       fprintf(stderr, "diff: This version of diff only handles two .txt files");
       exit(1);
     }
@@ -187,7 +194,7 @@ int files_check(int argc, const char* argv[]){
     exit(1);
   }
   return count;
-}
+}*/
 
 int main(int argc, const char* argv[]){
   perform_flags(--argc, ++argv);
